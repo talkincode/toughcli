@@ -25,6 +25,16 @@ def cli():
     pass
 
 @click.command()
+@click.option('--pypi', is_flag=True,help="from pypi")
+@click.option('--github', is_flag=True,help="from github")
+def upgrade(pypi,github):
+    if github:
+        shell.run("sudo pip install --upgrade https://github.com/talkincode/toughcli/archive/master.zip")
+    elif pypi:
+        shell.run("sudo pip install --upgrade toughcli")
+
+
+@click.command()
 @click.option('--install', is_flag=True,help="install docker & docker-compose")
 @click.option('--from-daocloud', is_flag=True)
 def docker(install,from_daocloud):
@@ -78,6 +88,7 @@ def radius(docker_install,docker_op,rundir,instance,worker_num,release):
         radius_serv.docker_op(rundir,instance,docker_op)
 
 
+cli.add_command(upgrade)
 cli.add_command(docker)
 cli.add_command(mysql)
 cli.add_command(redis)
