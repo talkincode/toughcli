@@ -4,22 +4,22 @@ import platform
 from toughcli.toughshell import shell
 
 def daocloud_install():
-    shell.run("curl -sSL https://get.daocloud.io/docker | sh")
-    shell.run("curl -L https://get.daocloud.io/docker/compose/releases/download"
+    shell.run("sudo curl -sSL https://get.daocloud.io/docker | sh")
+    shell.run("sudo curl -L https://get.daocloud.io/docker/compose/releases/download"
               "/1.5.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose")
-    shell.run("service docker start")
+    shell.run("sudo service docker start")
 
 def centos6_install():
-    shell.run("epel-release")
-    shell.run("yum install docker-io")
-    shell.run("chkconfig docker on")
-    shell.run("service docker start")
+    shell.run("sudo yum install epel-release")
+    shell.run("sudo yum install docker-io")
+    shell.run("sudo chkconfig docker on")
+    shell.run("sudo service docker start")
 
 def centos7_install():
-    shell.run("epel-release")
-    shell.run("yum install docker")
-    shell.run("systemctl enable docker")
-    shell.run("service docker start")
+    shell.run("sudo yum install epel-release")
+    shell.run("sudo yum install docker")
+    shell.run("sudo systemctl enable docker")
+    shell.run("sudo service docker start")
 
 
 def ubuntu_install():
