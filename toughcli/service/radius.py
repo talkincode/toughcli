@@ -18,7 +18,7 @@ radius:
     container_name: radius_{instance}
     command: pypy /opt/toughradius/toughctl --run -f {worker_num}
     image: "index.alauda.cn/toughstruct/toughradius:{release}"
-    net: "hosts"
+    net: "host"
     links:
         - redis:redis
     ulimits:
@@ -50,7 +50,7 @@ radius:
     container_name: radius_{instance}
     command: pypy /opt/toughradius/toughctl --run -f {worker_num}
     image: "index.alauda.cn/toughstruct/toughradius:{release}"
-    net: "hosts"
+    net: "host"
     links:
         - redis:redis
     environment:
