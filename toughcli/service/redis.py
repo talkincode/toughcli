@@ -35,10 +35,19 @@ def docker_install(rundir,instance):
         redis_pass=redis_pass,
         max_mem=max_mem
     )
-    with open("{0}/docker-compose.yaml".format(target_dir),'wb') as dcfile:
-        dcfile.write(docker_compose_fmt(**params))
 
-    shell.run('cd {0} && docker-compose up -d && docker-compose ps'.format(target_dir))
+    click.echo(click.style("\nRedis config:\n",fg='cyan'))
+    for k,v in params.iteritems():
+        click.echo(click.style("{0}: {1}".format(k,v),fg='green'))
+
+    click.echo(click.style("\nRedis docker-compose.yml:\n",fg='cyan'))
+    with open("{0}/docker-compose.yml".format(target_dir),'wb') as dcfile:
+        yml_content = docker_compose_fmt(**params)
+        dcfile.write(yml_content)
+        click.echo(click.style(yml_content,fg='green'))
+
+    shell.run('cd {0} && docker-compose up -d'.format(target_dir))
+    shell.run('cd {0} && docker-compose ps'.format(target_dir))
 
 
 def docker_op(rundir,instance,op):

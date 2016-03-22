@@ -65,20 +65,18 @@ radius:
 
 def docker_install(rundir,instance,work_num,release):
     yaml_cfg = docker_compose_fmt
-    mysql_instances = rundata.datas['mysql'].keys()
-    mysql_instances = [''] + mysql_instances
     params_cfg = {}
-    mysql_ins = click.prompt('Please select mysql instance [defaule sqlite]', 
-        default='',type=click.Choice(mysql_instances))
-    if mysql_ins:
-        _mysql = rundata.datas['mysql'].get(mysql_ins)
-        params_cfg.update(mysql_user=_mysql['user'],mysql_pwd=_mysql['ped'],
-            mysql_host=_mysql['host'],mysql_port=_mysql['port'],mysql_db=_mysql['dbname'])
-
-    if params_cfg:
-        click.echo(click.style("mysql config:  %s".format(params_cfg),fg='green'))
-    else:
+    dbtype = click.prompt('database type [sqlite,mysql]', default='sqlite', type=click.Choice(['sqlite','mysql']))
+    if dbtype == 'sqlite':
         yaml_cfg = docker_compose_fmt2
+    else:
+        params_cfg.update(
+            mysql_user = click.prompt('Please enter mysql user [mydb]', default='mydb'),
+            mysql_pwd = click.prompt('Please enter mysql password [mypwd]', default='mypwd'),
+            mysql_host = click.prompt('Please enter mysql host [localhost]', default='localhost'),
+            mysql_db = click.prompt('Please enter mysql database [mydb]', default='mydb'),
+            mysql_port = click.prompt('Please enter mysql port [3306]', default='3306'),
+        )
 
     target_dir = "{0}/{1}".format(rundir,instance)
     if not os.path.exists(target_dir):
@@ -91,10 +89,19 @@ def docker_install(rundir,instance,work_num,release):
         release=release,
     )
     params_cfg.update(params)
-    with open("{0}/docker-compose.yaml".format(target_dir),'wb') as dcfile:
-        dcfile.write(yaml_cfg(**params_cfg))
 
-    shell.run('cd {0} && docker-compose up -d && docker-compose ps'.format(target_dir))
+    click.echo(click.style("\nRadius config:\n",fg='cyan'))
+    for k,v in params_cfg.iteritems():
+        click.echo(click.style("{0}: {1}".format(k,v),fg='green'))
+
+    click.echo(click.style("\nRadius docker-compose.yml:\n",fg='cyan'))
+    with open("{0}/docker-compose.yml".format(target_dir),'wb') as dcfile:
+        yml_content = yaml_cfg(**params_cfg)
+        dcfile.write(yml_content)
+        click.echo(click.style(yml_content,fg='green'))
+
+    shell.run('cd {0} && docker-compose up -d'.format(target_dir))
+    shell.run('cd {0} && docker-compose ps'.format(target_dir))
 
 
 def docker_op(rundir,instance,op):

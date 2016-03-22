@@ -54,7 +54,7 @@ class ToughShell(object):
                 else:
                     self.err("RUN: %s failure!"%command)
 
-                return result    
+            return result    
                 
 shell = ToughShell()
 
