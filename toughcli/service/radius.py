@@ -18,7 +18,10 @@ radius:
     container_name: radius_{instance}
     command: pypy /opt/toughradius/toughctl --run -f {worker_num}
     image: "index.alauda.cn/toughstruct/toughradius:{release}"
-    net: "host"
+    ports: 
+        - "1816:1816"
+        - "1812:1812/udp"
+        - "1813:1813/udp"
     links:
         - redis:redis
     ulimits:
@@ -50,7 +53,10 @@ radius:
     container_name: radius_{instance}
     command: pypy /opt/toughradius/toughctl --run -f {worker_num}
     image: "index.alauda.cn/toughstruct/toughradius:{release}"
-    net: "host"
+    ports: 
+        - "1816:1816"
+        - "1812:1812/udp"
+        - "1813:1813/udp"
     links:
         - redis:redis
     environment:
