@@ -2,20 +2,20 @@
 
 
 from setuptools import setup, find_packages
-import toughguy
+import toughcli
 
-version = toughguy.__version__
+version = toughcli.__version__
 
 install_requires = [ 'Click']
 install_requires_empty = []
 package_data={}
 
 
-setup(name='toughguy',
+setup(name='toughcli',
       version=version,
       author='jamiesun',
       author_email='jamiesun.net@gmail.com',
-      url='https://github.com/talkincode/toughguy',
+      url='https://github.com/talkincode/toughcli',
       license='BSD',
       description='ToughSTRUCT Software Tools',
       long_description=open('README.md').read(),
@@ -31,11 +31,11 @@ setup(name='toughguy',
       keywords=['radius', 'AAA','authentication','accounting','authorization','toughradius','toughguy'],
       zip_safe=True,
       include_package_data=True,
-      eager_resources=['toughguy'],
+      eager_resources=['toughcli'],
       install_requires=install_requires,
       entry_points={
           'console_scripts': [
-              'guycli = toughguy.guycli:cli'
+              'toughcli = toughcli.toughclis:cli'
           ]
       }
 )

@@ -1,19 +1,13 @@
 #!/usr/bin/env python
 #coding:utf-8
-
-from toughguy.trshell import shell
+import platform
+from toughcli.toughshell import shell
 
 def daocloud_install():
-    rcode1,rcode2 = 1,1
-    rcode1,_,_ = shell.run("curl -sSL https://get.daocloud.io/docker | sh")
-    if rcode1 == 0:
-        rcode2,_,_ = shell.run("curl -L https://get.daocloud.io/docker/compose/releases/download"
-                              "/1.5.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose")
-    if rcode2 == 0:
-        shell.run("ln -s /usr/local/bin/docker-compose /usr/local/bin/docp")
-
-    if (rcode1,rcode2) == (0,0):
-        shell.run("service docker start")
+    shell.run("curl -sSL https://get.daocloud.io/docker | sh")
+    shell.run("curl -L https://get.daocloud.io/docker/compose/releases/download"
+              "/1.5.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose")
+    shell.run("service docker start")
 
 def centos6_install():
     shell.run("epel-release")
@@ -33,6 +27,19 @@ def ubuntu_install():
     shell.run("sudo apt-get install docker.io")
     shell.run("sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker")
     shell.run("sudo sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io")
+
+
+def auto_install():
+    name,ver,_ = platform.dist()
+    if name == 'centos' and ver.startswith("7"):
+        centos7_install()
+    elif name == 'centos' and ver.startswith("6"):
+        centos6_install()
+    elif name in ('ubuntu','debian'):
+        ubuntu_install()
+    else:
+        daocloud_install()
+
 
 
 
