@@ -1,6 +1,6 @@
-# toughguy
+# toughcli
 
-toughguy 是一个基于toughradius,toughwlan的工具箱。
+toughcli 是一个基于toughradius以及相关软件的工具包。
 
 ## 运行环境
 
@@ -10,13 +10,25 @@ toughguy 是一个基于toughradius,toughwlan的工具箱。
 
 ## 安装
 
-    pip install toughguy
+    pip install toughcli
 
 ## 使用说明
 
-    guycli --help
+    toughcli --help
 
 
+    Usage: toughcli [OPTIONS] COMMAND [ARGS]...
+
+    Options:
+      --version
+      --help     Show this message and exit.
+
+    Commands:
+      docker
+      mysql
+      radius
+      redis
+      upgrade
 
 
 
