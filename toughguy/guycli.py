@@ -38,9 +38,6 @@ def mysql(docker_install):
         mysqlfunc.docker_install(rundir,instance,username,password,root_password,dbname,max_mem)
 
 
-
-
-cli.add_command(modules)
 cli.add_command(mysql)
 
 if __name__ == '__main__':
