@@ -16,7 +16,7 @@ docker_compose_fmt = '''redis:
     restart: always   
 radius:
     container_name: radius_{instance}
-    command: pypy /opt/toughradius/toughctl --run -f {worker_num}
+    command: pypy /opt/toughradius/toughctl --run --fork {worker_num}
     image: "index.alauda.cn/toughstruct/toughradius:{release}"
     ports: 
         - "1816:1816"
@@ -51,7 +51,7 @@ docker_compose_fmt2 = '''redis:
     restart: always   
 radius:
     container_name: radius_{instance}
-    command: pypy /opt/toughradius/toughctl --run -f {worker_num}
+    command: pypy /opt/toughradius/toughctl --run --fork {worker_num}
     image: "index.alauda.cn/toughstruct/toughradius:{release}"
     ports: 
         - "1816:1816"
@@ -114,11 +114,13 @@ def docker_op(rundir,instance,op):
     target_dir = "{0}/{1}".format(rundir,instance)
     if not os.path.exists(target_dir):
         click.echo(click.style("instance {0} not exist".format(instance),fg='red'))
-    if op in ('logs','start','stop','restart','kill','rm'):
+    if op in ('logs','start','stop','restart','kill','rm',"ps"):
         shell.run('cd {0} && docker-compose {1} radius'.format(target_dir,op))
 
         if op == 'rm' and click.confirm('Do you want to remove radius data ({0})?'.format(target_dir)):
             shutil.rmtree(target_dir)
+    elif op =='sh':
+        shell.run('cd {0} && docker exec -it radius_{0} bash'.format(instance))
     else:
         click.echo(click.style("unsupported operation {0}".format(op),fg='red'))
 

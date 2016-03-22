@@ -76,7 +76,7 @@ def redis(docker_install,docker_op,rundir,instance):
 @click.command()
 @click.option('--docker-install', is_flag=True)
 @click.option('--docker-op', default='',
-    type=click.Choice(['','logs','start','stop','restart','kill','rm']))
+    type=click.Choice(['','logs','start','stop','restart','kill','rm','sh',"ps"]))
 @click.option('--rundir', default=RUNDIR, help="default:%s"%RUNDIR)
 @click.option('--instance', default='myradius')
 @click.option('--worker-num', default=2,type=click.INT)
