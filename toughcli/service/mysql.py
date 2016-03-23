@@ -2,9 +2,8 @@
 #coding:utf-8
 
 import os, sys, click
-from toughcli.toughshell import shell
-from toughcli.rundata import rundata
 import shutil
+from toughcli.settings import *
 
 docker_compose_fmt = '''dbmysql:
     container_name: mysql_{instance}
@@ -12,11 +11,15 @@ docker_compose_fmt = '''dbmysql:
     privileged: true
     net: "host"
     environment:
+        - SERVERID={serverid}
+        - AI_INCREMENT={ai_increment}
+        - AI_OFFSET={ai_offset}
         - MYSQL_MAX_MEM={max_mem}
         - MYSQL_USER={username}
         - MYSQL_PASSWORD={password}
         - MYSQL_DATABASE={dbname}
         - MYSQL_ROOT_PASSWORD={root_password}
+        - MYSQL_REPL_PASSWORD={mysql_repl_password}
     restart: always
     ulimits:
         nproc: 65535
@@ -29,38 +32,47 @@ docker_compose_fmt = '''dbmysql:
 '''.format
 
 def docker_install(rundir,instance):
-    username = click.prompt('Please enter mysql user [mydb]', default='mydb')
-    password = click.prompt('Please enter mysql password [mypwd]', default='mypwd')
-    root_password = click.prompt('Please enter mysql root password [none]', default='')
-    dbname = click.prompt('Please enter mysql database [mydb]', default='mydb')
-    max_mem = click.prompt('Please enter mysql max_mem [none]', default='', 
-        type=click.Choice(['', '512M','1G','4G']))
+    params_cfg = dict(
+        rundir=rundir,
+        instance=instance,
+        username = click.prompt('Please enter mysql user', default='mydb'),
+        password = click.prompt('Please enter mysql password', default='mypwd'),
+        root_password = click.prompt('Please enter mysql root password ', default=''),
+        dbname = click.prompt('Please enter mysql database', default='mydb'),
+        max_mem = click.prompt('Please enter mysql max_mem', default='', 
+            type=click.Choice(['', '512M','1G','4G'])),
+        mysql_repl_password = '',
+        serverid = '',
+        ai_increment = '',
+        ai_offset = ''
+    )
+
+    if click.confirm('Do you want to use mysql replication?'):
+        params_cfg['mysql_repl_password'] = click.prompt(
+            'Please enter mysql replication password', default='replication')
+        params_cfg['serverid'] = click.prompt(
+            'Please enter mysql server id', default='1',type=click.Choice(['1','2']))
+        params_cfg['ai_increment'] = click.prompt(
+            'Please enter mysql auto-increment-increment', default='1',type=click.Choice(['1','2']))
+        params_cfg['ai_offset'] = click.prompt(
+            'Please enter mysql auto-increment-offset', default='1',type=click.Choice(['1','2']))
 
     target_dir = "{0}/{1}".format(rundir,instance)
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
-    params = dict(
-        rundir=rundir,
-        instance=instance,
-        username=username,
-        password=password,
-        dbname=dbname,
-        root_password=root_password,
-        max_mem=max_mem
-    )
     click.echo(click.style("\nMySQL config:\n",fg='cyan'))
-    for k,v in params.iteritems():
+    for k,v in params_cfg.iteritems():
         click.echo(click.style("{0}: {1}".format(k,v),fg='green'))
 
     click.echo(click.style("\nMySQL docker-compose.yml:\n",fg='cyan'))
     with open("{0}/docker-compose.yml".format(target_dir),'wb') as dcfile:
-        yml_content = docker_compose_fmt(**params)
+        yml_content = docker_compose_fmt(**params_cfg)
         dcfile.write(yml_content)
         click.echo(click.style(yml_content,fg='green'))
 
-    shell.run('cd {0} && docker-compose up -d'.format(target_dir),)
-    shell.run('cd {0} && docker-compose ps'.format(target_dir))
+    os.system('cd {0} && docker-compose up -d'.format(target_dir))
+    os.system('cd {0} && docker-compose ps'.format(target_dir))
 
 
 
@@ -68,14 +80,12 @@ def docker_op(rundir,instance,op):
     target_dir = "{0}/{1}".format(rundir,instance)
     if not os.path.exists(target_dir):
         click.echo(click.style("instance {0} not exist".format(instance),fg='red'))
-    if op in ('logs','start','stop','restart','kill','rm','backup'):
-        if op == 'backup':
-            shell.run('docker exec -it mysql_{0} sh -c "dbutils backup" '.format(instance))
-        else:
-            shell.run('cd {0} && docker-compose {1} dbmysql'.format(target_dir,op))
-
-        if op == 'rm' and click.confirm('Do you want to remove mysql data ({0})?'.format(target_dir)):
+    if op in DOCKER_OPS:
+        os.system('cd {0} && docker-compose {1}'.format(target_dir,op))
+        if op in ('rm','down') and click.confirm('Do you want to remove mysql data ({0})?'.format(target_dir)):
             shutil.rmtree(target_dir)
+    elif op == 'backup':
+        os.system('docker exec -it mysql_{0} sh -c "dbutils backup" '.format(instance))
     else:
         click.echo(click.style("unsupported operation {0}".format(op),fg='red'))
 

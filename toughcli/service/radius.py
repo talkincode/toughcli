@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 #coding:utf-8
 import os, sys, click
-from toughcli.toughshell import shell
-from toughcli.rundata import rundata
 import shutil
 
 
@@ -16,7 +14,6 @@ docker_compose_fmt = '''redis:
     restart: always   
 radius:
     container_name: radius_{instance}
-    command: pypy /opt/toughradius/toughctl --run --fork {worker_num}
     image: "index.alauda.cn/toughstruct/toughradius:{release}"
     ports: 
         - "1816:1816"
@@ -51,7 +48,6 @@ docker_compose_fmt2 = '''redis:
     restart: always   
 radius:
     container_name: radius_{instance}
-    command: pypy /opt/toughradius/toughctl --run --fork {worker_num}
     image: "index.alauda.cn/toughstruct/toughradius:{release}"
     ports: 
         - "1816:1816"
@@ -77,11 +73,11 @@ def docker_install(rundir,instance,work_num,release):
         yaml_cfg = docker_compose_fmt2
     else:
         params_cfg.update(
-            mysql_user = click.prompt('Please enter mysql user [mydb]', default='mydb'),
-            mysql_pwd = click.prompt('Please enter mysql password [mypwd]', default='mypwd'),
-            mysql_host = click.prompt('Please enter mysql host [localhost]', default='localhost'),
-            mysql_db = click.prompt('Please enter mysql database [mydb]', default='mydb'),
-            mysql_port = click.prompt('Please enter mysql port [3306]', default='3306'),
+            mysql_port = click.prompt('Please enter mysql port', default='3306'),
+            mysql_host = click.prompt('Please enter mysql host', default='localhost'),
+            mysql_user = click.prompt('Please enter mysql user', default='mydb'),
+            mysql_pwd = click.prompt('Please enter mysql password', default='mypwd'),
+            mysql_db = click.prompt('Please enter mysql database', default='mydb'),
         )
 
     target_dir = "{0}/{1}".format(rundir,instance)
@@ -106,8 +102,8 @@ def docker_install(rundir,instance,work_num,release):
         dcfile.write(yml_content)
         click.echo(click.style(yml_content,fg='green'))
 
-    shell.run('cd {0} && docker-compose up -d'.format(target_dir))
-    shell.run('cd {0} && docker-compose ps'.format(target_dir))
+    os.system('cd {0} && docker-compose up -d'.format(target_dir))
+    os.system('cd {0} && docker-compose ps'.format(target_dir))
 
 
 def docker_op(rundir,instance,op):
@@ -115,12 +111,12 @@ def docker_op(rundir,instance,op):
     if not os.path.exists(target_dir):
         click.echo(click.style("instance {0} not exist".format(instance),fg='red'))
     if op in ('logs','start','stop','restart','kill','rm',"ps"):
-        shell.run('cd {0} && docker-compose {1} radius'.format(target_dir,op))
+        os.system('cd {0} && docker-compose {1} radius'.format(target_dir,op))
 
         if op == 'rm' and click.confirm('Do you want to remove radius data ({0})?'.format(target_dir)):
             shutil.rmtree(target_dir)
     elif op =='sh':
-        shell.run('cd {0} && docker exec -it radius_{0} bash'.format(instance))
+        os.system('cd {0} && docker exec -it radius_{0} bash'.format(instance))
     else:
         click.echo(click.style("unsupported operation {0}".format(op),fg='red'))
 

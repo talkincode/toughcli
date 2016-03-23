@@ -2,16 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import os, sys, click
-from toughcli.toughshell import shell
 from toughcli import __version__
 from toughcli.service import mysql as mysql_serv
 from toughcli.service import docker as docker_serv
 from toughcli.service import redis as redis_serv
 from toughcli.service import radius as radius_serv
-from toughcli.rundata import rundata
-
-RUNDIR = '/home/toughrun'
-
+from toughcli.settings import *
 
 def print_version(ctx, param, value):
     if not value or ctx.resilient_parsing:
@@ -29,9 +25,9 @@ def cli():
 @click.option('--github', is_flag=True,help="from github")
 def upgrade(pypi,github):
     if github:
-        shell.run("sudo pip install --upgrade https://github.com/talkincode/toughcli/archive/master.zip")
+        os.system("sudo pip install --upgrade https://github.com/talkincode/toughcli/archive/master.zip")
     elif pypi:
-        shell.run("sudo pip install --upgrade toughcli")
+        os.system("sudo pip install --upgrade toughcli")
 
 
 @click.command()
@@ -45,47 +41,53 @@ def docker(install,from_daocloud):
 
 
 @click.command()
-@click.option('--docker-install', is_flag=True,help="install docker-mysql instance")
-@click.option('--docker-op', default='',
-    type=click.Choice(['','logs','start','stop','restart','kill','rm','backup']),
-    help="docker instance operate")
-@click.option('--rundir', default=RUNDIR,help="default:%s"%RUNDIR)
-@click.option('--instance', default='mydb',help="mysql instance, default:mydb")
-def mysql(docker_install,docker_op,rundir,instance):
-    if docker_install:
+@click.option('--install', is_flag=True,help="install mysql docker instance")
+@click.option('-e','--edit-config', is_flag=True,help="edit mysql docker-compose.yml config")
+@click.option('-o','--docker-operate', default='',type=click.Choice(MYSQL_OPS),help="docker instance operate")
+@click.option('-d','--rundir', default=RUNDIR,help="default:%s"%RUNDIR)
+@click.option('-i','--instance', default='mydb',help="mysql instance, default:mydb")
+def mysql(install,edit_config,docker_operate,rundir,instance):
+    if install:
         mysql_serv.docker_install(rundir,instance)
-    elif docker_op:
-        mysql_serv.docker_op(rundir,instance,docker_op)
+    elif docker_operate:
+        mysql_serv.docker_op(rundir,instance,docker_operate)
+    elif edit_config:
+        click.edit(filename="{0}/{1}/docker-compose.yml".format(rundir,instance))
 
 
 @click.command()
-@click.option('--docker-install', is_flag=True,help="install docker-redis instance")
-@click.option('--docker-op', default='',
-    type=click.Choice(['','logs','start','stop','restart','kill','rm']),
-    help="docker instance operate")
-@click.option('--rundir', default=RUNDIR,help="default:%s"%RUNDIR)
-@click.option('--instance', default='myredis',help="redis instance, default:myredis")
-def redis(docker_install,docker_op,rundir,instance):
-    if docker_install:
+@click.option('--install', is_flag=True,help="install redis docker instance")
+@click.option('-e','--edit-config', is_flag=True,help="edit redis docker-compose.yml config")
+@click.option('-o','--docker-operate', default='', type=click.Choice(REDIS_OPS),help="docker instance operate")
+@click.option('-d','--rundir', default=RUNDIR, help="default:%s"%RUNDIR)
+@click.option('-i','--instance', default='myredis',help="redis instance, default:myredis")
+def redis(install,edit_config,docker_operate,rundir,instance):
+    if install:
         redis_serv.docker_install(rundir,instance)
-    elif docker_op:
-        redis_serv.docker_op(rundir,instance,docker_op)
+    elif docker_operate:
+        redis_serv.docker_op(rundir,instance,docker_operate)
+    elif edit_config:
+        click.edit(filename="{0}/{1}/docker-compose.yml".format(rundir,instance))
 
 
 
 @click.command()
-@click.option('--docker-install', is_flag=True)
-@click.option('--docker-op', default='',
-    type=click.Choice(['','logs','start','stop','restart','kill','rm','sh',"ps"]))
-@click.option('--rundir', default=RUNDIR, help="default:%s"%RUNDIR)
-@click.option('--instance', default='myradius')
-@click.option('--worker-num', default=2,type=click.INT)
-@click.option('--release', default='stable',type=click.Choice(['dev','stable']),)
-def radius(docker_install,docker_op,rundir,instance,worker_num,release):
-    if docker_install:
+@click.option('--install', is_flag=True)
+@click.option('-e','--edit-config', is_flag=True,help="edit radius docker-compose.yml config")
+@click.option('-o','--docker-operate', default='', type=click.Choice(RADIUS_OPS),help="docker instance operate")
+@click.option('-d','--rundir', default=RUNDIR, help="default:%s"%RUNDIR)
+@click.option('-i','--instance', default='myradius')
+@click.option('-n','--worker-num', default=2,type=click.INT)
+@click.option('-r','--release', default='stable',type=click.Choice(['dev','stable','commcial']),)
+def radius(install,edit_config, docker_operate,rundir,instance,worker_num,release):
+    if install and release == 'commcial':
+        licence = click.prompt('Please enter your commcial licence:', default='')
+    elif install and release in ('dev','stable'):
         radius_serv.docker_install(rundir,instance,worker_num,release)
-    elif docker_op:
-        radius_serv.docker_op(rundir,instance,docker_op)
+    elif docker_operate:
+        radius_serv.docker_op(rundir,instance,docker_operate)
+    elif edit_config:
+        click.edit(filename="{0}/{1}/docker-compose.yml".format(rundir,instance))
 
 
 cli.add_command(upgrade)

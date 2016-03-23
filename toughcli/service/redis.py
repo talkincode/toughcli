@@ -4,7 +4,7 @@
 import sys,os
 import shutil
 import click
-from toughcli.toughshell import shell
+from toughcli.settings import *
 
 docker_compose_fmt = '''redis:
     container_name: redis_{instance}
@@ -22,8 +22,8 @@ docker_compose_fmt = '''redis:
 '''.format
 
 def docker_install(rundir,instance):
-    redis_pass = click.prompt('Please enter redis password [myredis]', default='myredis')
-    max_mem = click.prompt('Please enter redis max_mem [256m]', default='256m', 
+    redis_pass = click.prompt('Please enter redis password', default='myredis')
+    max_mem = click.prompt('Please enter redis max_mem', default='256m', 
         type=click.Choice(['256m', '512m','1024m','2048m','4096m','8192m']))
     target_dir = "{0}/{1}".format(rundir,instance)
     if not os.path.exists(target_dir):
@@ -46,16 +46,16 @@ def docker_install(rundir,instance):
         dcfile.write(yml_content)
         click.echo(click.style(yml_content,fg='green'))
 
-    shell.run('cd {0} && docker-compose up -d'.format(target_dir))
-    shell.run('cd {0} && docker-compose ps'.format(target_dir))
+    os.system('cd {0} && docker-compose up -d'.format(target_dir))
+    os.system('cd {0} && docker-compose ps'.format(target_dir))
 
 
 def docker_op(rundir,instance,op):
     target_dir = "{0}/{1}".format(rundir,instance)
     if not os.path.exists(target_dir):
         click.echo(click.style("instance {0} not exist".format(instance),fg='red'))
-    if op in ('logs','start','stop','restart','kill','rm'):
-        shell.run('cd {0} && docker-compose {1} redis'.format(target_dir,op))
+    if op in DOCKER_OPS:
+        os.system('cd {0} && docker-compose {1}'.format(target_dir,op))
     else:
         click.echo(click.style("unsupported operation {0}".format(op),fg='red'))
 
