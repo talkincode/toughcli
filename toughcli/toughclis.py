@@ -42,11 +42,8 @@ def upgrade(pypi,github):
 
 @click.command()
 @click.option('--install', is_flag=True,help="install docker & docker-compose")
-@click.option('--from-daocloud', is_flag=True)
-def docker(install,from_daocloud):
-    if install and from_daocloud:
-        docker_serv.daocloud_install()
-    elif from_daocloud:
+def docker(install):
+    if install:
         docker_serv.auto_install()
 
 
