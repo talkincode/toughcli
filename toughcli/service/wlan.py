@@ -13,7 +13,7 @@ docker_compose_fmt = '''redis:
         - REDIS_PASS=wlanredis
     restart: always 
 wlanpd:
-    command: /usr/local/bin/toughrun portald
+    command: pypy /opt/toughwlan/toughctl  portald
     image: "index.alauda.cn/toughstruct/toughwlan"
     ports:
         - "{portal_listen_port}:50100/udp"
@@ -29,7 +29,7 @@ wlanpd:
     volumes:
         - /home/toughrun/{instance}:/var/toughwlan
 wlan:
-    command: /usr/local/bin/toughrun httpd
+    command: pypy /opt/toughwlan/toughctl  httpd
     image: "index.alauda.cn/toughstruct/toughwlan"
     privileged: true
     expose:
@@ -79,7 +79,7 @@ docker_compose_fmt2 = '''redis:
     restart: always         
 wlan:
     container_name: wlan_{instance}
-    command: /usr/local/bin/toughrun standalone
+    command: pypy /opt/toughwlan/toughctl standalone
     image: "index.alauda.cn/toughstruct/toughwlan"
     privileged: true
     ports:
@@ -148,7 +148,7 @@ def docker_op(rundir,instance,op):
 
 def docker_scale(rundir,instance,num):
     target_dir = "{0}/{1}".format(rundir,instance)
-    os.system('cd {0} && docker-compose scale wlan={0}'.format(target_dir,num))
+    os.system('cd {0} && docker-compose scale wlan={1}'.format(target_dir,num))
     os.system('cd {0} && docker-compose kill down'.format(target_dir))
     os.system('cd {0} && docker-compose up -d haproxy'.format(target_dir))
     
