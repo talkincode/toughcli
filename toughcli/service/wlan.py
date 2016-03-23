@@ -132,7 +132,8 @@ def docker_install(rundir,instance,work_num):
 
     os.system('cd {0} && docker-compose up -d'.format(target_dir))
     os.system('cd {0} && docker-compose ps'.format(target_dir))
-    docker_scale(rundir,instance,work_num)
+    if dbtype == 'mysql':
+        docker_scale(rundir,instance,work_num)
 
 
 def docker_op(rundir,instance,op):
@@ -149,7 +150,7 @@ def docker_op(rundir,instance,op):
 def docker_scale(rundir,instance,num):
     target_dir = "{0}/{1}".format(rundir,instance)
     os.system('cd {0} && docker-compose scale wlan={1}'.format(target_dir,num))
-    os.system('cd {0} && docker-compose kill down'.format(target_dir))
+    os.system('cd {0} && docker-compose down haproxy'.format(target_dir))
     os.system('cd {0} && docker-compose up -d haproxy'.format(target_dir))
     
 
