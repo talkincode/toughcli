@@ -132,6 +132,7 @@ def docker_install(rundir,instance,work_num):
 
     os.system('cd {0} && docker-compose up -d'.format(target_dir))
     os.system('cd {0} && docker-compose ps'.format(target_dir))
+    docker_scale(rundir,instance,work_num)
 
 
 def docker_op(rundir,instance,op):
