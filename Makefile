@@ -15,4 +15,7 @@ clean:
 venv:
 	virtualenv venv --no-site-packages
 
+install:
+	python setup.py install
+
 .PHONY: build register upload clean venv
