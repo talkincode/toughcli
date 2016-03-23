@@ -130,8 +130,8 @@ def docker_install(rundir,instance,work_num):
         dcfile.write(yml_content)
         click.echo(click.style(yml_content,fg='green'))
 
-    os.system('cd {0} && `which docker-compose` up -d'.format(target_dir))
-    os.system('cd {0} && `which docker-compose` ps'.format(target_dir))
+    os.system('cd {0} && docker-compose up -d'.format(target_dir))
+    os.system('cd {0} && docker-compose ps'.format(target_dir))
     docker_scale(rundir,instance,work_num)
 
 
@@ -140,7 +140,7 @@ def docker_op(rundir,instance,op):
     if not os.path.exists(target_dir):
         click.echo(click.style("instance {0} not exist".format(instance),fg='red'))
     if op in DOCKER_OPS:
-        os.system('cd {0} && `which docker-compose` {1}'.format(target_dir,op))
+        os.system('cd {0} && docker-compose {1}'.format(target_dir,op))
         if op == 'rm' and click.confirm('Do you want to remove toughwlan data ({0})?'.format(target_dir)):
             shutil.rmtree(target_dir)
     else:
@@ -148,8 +148,8 @@ def docker_op(rundir,instance,op):
 
 def docker_scale(rundir,instance,num):
     target_dir = "{0}/{1}".format(rundir,instance)
-    os.system('cd {0} && `which docker-compose` scale wlan={1}'.format(target_dir,num))
-    os.system('cd {0} && `which docker-compose` kill down'.format(target_dir))
-    os.system('cd {0} && `which docker-compose` up -d haproxy'.format(target_dir))
+    os.system('cd {0} && docker-compose scale wlan={1}'.format(target_dir,num))
+    os.system('cd {0} && docker-compose kill down'.format(target_dir))
+    os.system('cd {0} && docker-compose up -d haproxy'.format(target_dir))
     
 
