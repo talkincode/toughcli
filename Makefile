@@ -18,4 +18,4 @@ venv:
 install:
 	python setup.py install
 
-.PHONY: build register upload clean venv
+.PHONY: build register upload clean venv install
