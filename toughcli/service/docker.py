@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #coding:utf-8
-import platform
+import platform,os
 
 def daocloud_install():
     os.system("sudo curl -sSL https://get.daocloud.io/docker | sh")
