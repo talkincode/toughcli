@@ -7,3 +7,4 @@ DOCKER_OPS = ['','ps','config','pull','logs','start','stop','restart','down','pa
 MYSQL_OPS = ['','ps','config','pull','logs','start','stop','restart','down','pause','unpause','backup']
 REDIS_OPS = ['','ps','config','pull','logs','start','stop','restart','down','pause','unpause']
 RADIUS_OPS = ['','ps','config','pull','logs','start','stop','restart','down','pause','unpause']
+WLAN_OPS = ['','ps','config','pull','logs','start','stop','restart','down','pause','unpause']

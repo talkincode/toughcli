@@ -2,6 +2,7 @@
 #coding:utf-8
 import os, sys, click
 import shutil
+from toughcli.settings import *
 
 
 docker_compose_fmt = '''redis:
@@ -75,7 +76,7 @@ def docker_install(rundir,instance,work_num,release):
         params_cfg.update(
             mysql_port = click.prompt('Please enter mysql port', default='3306'),
             mysql_host = click.prompt('Please enter mysql host', default='localhost'),
-            mysql_user = click.prompt('Please enter mysql user', default='mydb'),
+            mysql_user = click.prompt('Please enter mysql user', default='myuser'),
             mysql_pwd = click.prompt('Please enter mysql password', default='mypwd'),
             mysql_db = click.prompt('Please enter mysql database', default='mydb'),
         )
@@ -110,13 +111,11 @@ def docker_op(rundir,instance,op):
     target_dir = "{0}/{1}".format(rundir,instance)
     if not os.path.exists(target_dir):
         click.echo(click.style("instance {0} not exist".format(instance),fg='red'))
-    if op in ('logs','start','stop','restart','kill','rm',"ps"):
-        os.system('cd {0} && docker-compose {1} radius'.format(target_dir,op))
+    if op in DOCKER_OPS:
+        os.system('cd {0} && docker-compose {1}'.format(target_dir,op))
 
         if op == 'rm' and click.confirm('Do you want to remove radius data ({0})?'.format(target_dir)):
             shutil.rmtree(target_dir)
-    elif op =='sh':
-        os.system('cd {0} && docker exec -it radius_{0} bash'.format(instance))
     else:
         click.echo(click.style("unsupported operation {0}".format(op),fg='red'))
 

@@ -7,6 +7,7 @@ from toughcli.service import mysql as mysql_serv
 from toughcli.service import docker as docker_serv
 from toughcli.service import redis as redis_serv
 from toughcli.service import radius as radius_serv
+from toughcli.service import wlan as wlan_serv
 from toughcli.settings import *
 
 def print_version(ctx, param, value):
@@ -15,8 +16,17 @@ def print_version(ctx, param, value):
     click.echo(click.style("toughcli {0}".format(__version__),fg='cyan'))
     ctx.exit()
 
+def print_info(ctx, param, value):
+    if not value or ctx.resilient_parsing:
+        return
+    click.echo(click.style("toughcli {0}".format(__version__),fg='cyan'))
+    ctx.exit()
+    
+
+
 @click.group()
 @click.option('--version', is_flag=True, callback=print_version,expose_value=False, is_eager=True)
+@click.option('--server-info', is_flag=True, callback=print_info,expose_value=False, is_eager=True)
 def cli():
     pass
 
@@ -89,12 +99,31 @@ def radius(install,edit_config, docker_operate,rundir,instance,worker_num,releas
     elif edit_config:
         click.edit(filename="{0}/{1}/docker-compose.yml".format(rundir,instance))
 
+@click.command()
+@click.option('--install', is_flag=True)
+@click.option('--scale', is_flag=True)
+@click.option('-e','--edit-config', is_flag=True,help="edit toughwlan docker-compose.yml config")
+@click.option('-o','--docker-operate', default='', type=click.Choice(WLAN_OPS),help="docker instance operate")
+@click.option('-d','--rundir', default=RUNDIR, help="default:%s"%RUNDIR)
+@click.option('-i','--instance', default='myradius')
+@click.option('-n','--worker-num', default=2,type=click.INT)
+def wlan(install,scale,edit_config, docker_operate,rundir,instance,worker_num):
+    if install:
+        wlan_serv.docker_install(rundir,instance,worker_num)
+    elif docker_operate:
+        wlan_serv.docker_op(rundir,instance,docker_operate)
+    elif edit_config:
+        click.edit(filename="{0}/{1}/docker-compose.yml".format(rundir,instance))
+    elif scale:
+        wlan_serv.docker_scale(rundir,instance,worker_num)
+
 
 cli.add_command(upgrade)
 cli.add_command(docker)
 cli.add_command(mysql)
 cli.add_command(redis)
 cli.add_command(radius)
+cli.add_command(wlan)
 
 if __name__ == '__main__':
     cli()
