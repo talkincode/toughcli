@@ -86,6 +86,8 @@ def docker_op(rundir,instance,op):
             shutil.rmtree(target_dir)
     elif op == 'backup':
         os.system('docker exec -it mysql_{0} sh -c "dbutils backup" '.format(instance))
+    elif op == 'showdbs':
+        os.system('docker exec -it mysql_{0} sh -c "dbutils showdbs" '.format(instance))
     else:
         click.echo(click.style("unsupported operation {0}".format(op),fg='red'))
 

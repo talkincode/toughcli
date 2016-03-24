@@ -13,7 +13,7 @@ docker_compose_fmt = '''redis:
         - REDIS_PASS=wlanredis
     restart: always 
 wlanpd:
-    command: pypy /opt/toughwlan/toughctl  portald
+    command: pypy /opt/toughwlan/toughctl  --portald
     image: "index.alauda.cn/toughstruct/toughwlan"
     ports:
         - "{portal_listen_port}:50100/udp"
@@ -29,7 +29,7 @@ wlanpd:
     volumes:
         - /home/toughrun/{instance}:/var/toughwlan
 wlan:
-    command: pypy /opt/toughwlan/toughctl  httpd
+    command: pypy /opt/toughwlan/toughctl  --httpd
     image: "index.alauda.cn/toughstruct/toughwlan"
     privileged: true
     expose:
@@ -79,7 +79,7 @@ docker_compose_fmt2 = '''redis:
     restart: always         
 wlan:
     container_name: wlan_{instance}
-    command: pypy /opt/toughwlan/toughctl standalone
+    command: pypy /opt/toughwlan/toughctl --standalone
     image: "index.alauda.cn/toughstruct/toughwlan"
     privileged: true
     ports:
