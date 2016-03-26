@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os, sys, click
+import platform
 from toughcli import __version__
 from toughcli.service import mysql as mysql_serv
 from toughcli.service import docker as docker_serv
@@ -21,9 +22,14 @@ def print_version(ctx, param, value):
 def print_info(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
-    click.echo(click.style("CLI_VER toughcli {0}".format(__version__),fg='cyan'))
-    click.echo(click.style("ENV_HOME {0}".format(os.environ.get("HOME")),fg='cyan'))
-    click.echo(click.style("ENV_PATH {0}".format(os.environ.get("PATH")),fg='cyan'))
+    click.echo(click.style("Linux distribution: {0}".format(','.join(platform.linux_distribution())),fg='cyan'))
+    click.echo(click.style("Cli version toughcli: {0}".format(__version__),fg='cyan'))
+    click.echo(click.style("Env_home: {0}".format(os.environ.get("HOME")),fg='cyan'))
+    click.echo(click.style("Env_path: {0}".format(os.environ.get("PATH")),fg='cyan'))
+    click.echo(click.style("Server platform: {0},{1}".format(platform.platform(),platform.machine()),fg='cyan'))
+    click.echo(click.style("Python version: {0},{1}".format(platform.python_implementation(), platform.python_version()),fg='cyan'))
+    os.system("docker --version")
+    os.system("docker-compose --version")
     ctx.exit()
     
 
