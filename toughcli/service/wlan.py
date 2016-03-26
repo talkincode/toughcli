@@ -150,7 +150,8 @@ def docker_op(rundir,instance,op):
 def docker_scale(rundir,instance,num):
     target_dir = "{0}/{1}".format(rundir,instance)
     os.system('cd {0} && docker-compose scale wlan={1}'.format(target_dir,num))
-    os.system('cd {0} && docker-compose down haproxy'.format(target_dir))
+    os.system('cd {0} && docker-compose kill haproxy'.format(target_dir))
+    os.system('cd {0} && docker-compose rm haproxy'.format(target_dir))
     os.system('cd {0} && docker-compose up -d haproxy'.format(target_dir))
     
 
