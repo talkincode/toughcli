@@ -14,10 +14,9 @@ toughcli 是一个基于toughradius以及相关软件的工具包。
 
 ## 使用说明
 
-- 查看帮助：
+查看帮助：
 
     toughcli --help
-
 
     Usage: toughcli [OPTIONS] COMMAND [ARGS]...
 
@@ -32,10 +31,9 @@ toughcli 是一个基于toughradius以及相关软件的工具包。
       redis
       upgrade
 
-- 查看服务器信息：
+查看服务器信息：
 
     $ toughcli --info
-
     Linux distribution: CentOS Linux,7.2.1511,Core
     Cli version toughcli: 0.0.7
     Env_home: /root
