@@ -10,6 +10,8 @@ from toughcli.service import radius as radius_serv
 from toughcli.service import wlan as wlan_serv
 from toughcli.settings import *
 
+os.environ['PATH'] += ':/usr/local/bin'
+
 def print_version(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
@@ -19,14 +21,16 @@ def print_version(ctx, param, value):
 def print_info(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
-    click.echo(click.style("toughcli {0}".format(__version__),fg='cyan'))
+    click.echo(click.style("CLI_VER toughcli {0}".format(__version__),fg='cyan'))
+    click.echo(click.style("ENV_HOME {0}".format(os.environ.get("HOME")),fg='cyan'))
+    click.echo(click.style("ENV_PATH {0}".format(os.environ.get("PATH")),fg='cyan'))
     ctx.exit()
     
 
 
 @click.group()
 @click.option('--version', is_flag=True, callback=print_version,expose_value=False, is_eager=True)
-@click.option('--server-info', is_flag=True, callback=print_info,expose_value=False, is_eager=True)
+@click.option('--info', is_flag=True, callback=print_info,expose_value=False, is_eager=True)
 def cli():
     pass
 
