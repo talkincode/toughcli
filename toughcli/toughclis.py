@@ -30,6 +30,7 @@ def print_info(ctx, param, value):
     click.echo(click.style("Python version: {0},{1}".format(platform.python_implementation(), platform.python_version()),fg='cyan'))
     os.system("docker --version")
     os.system("docker-compose --version")
+    os.system("ls `which docker-compose`")
     ctx.exit()
     
 
