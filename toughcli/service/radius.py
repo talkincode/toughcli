@@ -150,7 +150,7 @@ def install_native_py_models():
     os.system("pip install evernote")
 
 def install_native_release(release):
-    if os.path.exists("opt/toughradius"):
+    if os.path.exists("/opt/toughradius"):
         native_upgrade(release)
     else:
         os.system("cd /opt && git clone -b release-%s https://github.com/talkincode/ToughRADIUS.git /opt/toughradius"%release)
