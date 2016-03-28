@@ -2,6 +2,7 @@
 #coding:utf-8
 import os, sys, click
 import shutil
+import platform
 from toughcli.settings import *
 
 
@@ -120,7 +121,80 @@ def docker_op(rundir,instance,op):
         click.echo(click.style("unsupported operation {0}".format(op),fg='red'))
 
 
+##################################################################################
 
+def install_native_py_models():
+    os.system("pip install supervisor")
+    os.system("pip install wheel")
+    os.system("pip install Mako")
+    os.system("pip install Beaker")
+    os.system("pip install MarkupSafe")
+    os.system("pip install PyYAML")
+    os.system("pip install Twisted")
+    os.system("pip install treq")
+    os.system("pip install tablib")
+    os.system("pip install cyclone")
+    os.system("pip install six")
+    os.system("pip install autobahn")
+    os.system("pip install pycrypto")
+    os.system("pip install pyOpenSSL>=0.14")
+    os.system("pip install service_identity")
+    os.system("pip install MySQL-python")
+    os.system("pip install SQLAlchemy")
+    os.system("pip install pyzmq")
+    os.system("pip install txzmq")
+    os.system("pip install redis")
+    os.system("pip install msgpack-python")
+    os.system("pip install psutil")
+    os.system("pip install IPy")
+    os.system("pip install evernote")
+
+def install_native_release(release):
+    os.system("cd /opt && git clone -b release-%s https://github.com/talkincode/ToughRADIUS.git /opt/toughradius"%release)
+    os.system("rm -f /etc/toughradius.json")
+    os.system("rm -f /etc/supervisord.conf")
+    os.system("rm -f /etc/init.d/supervisord")
+    os.system("ln -s /opt/toughradius/etc/toughradius.json /etc/toughradius.json")
+    os.system("ln -s /opt/toughradius/etc/supervisord_native.conf /etc/supervisord.conf")
+    os.system("ln -s /opt/toughradius/etc/supervisord /etc/init.d/supervisord")
+    os.system("chmod +x /etc/init.d/supervisord")
+    os.system("chkconfig supervisord on")
+
+def ubuntu_install(release):
+    os.system("apt-get install -y  libffi-devel openssl openssl-devel git gcc python-devel python-setuptools")
+    os.system("yum install -y  mysql-client libmysqlclient-dev libzmq-dev redis-server")
+    install_native_py_models()
+    install_native_release(release)
+    strs = "install done, please edit /etc/toughradius.json and start by 'service supervisord start' "
+    click.echo(click.style(strs,fg='green'))
+
+def centos_install(release):
+    os.system("yum install -y  wget zip python-devel libffi-devel openssl openssl-devel gcc git")
+    os.system("apt-get install -y  mysql-devel MySQL-python redis-server")
+    install_native_py_models()
+    install_native_release(release)
+    strs = "install done, please edit /etc/toughradius.json and start by 'service supervisord start' "
+    click.echo(click.style(strs,fg='green'))
+
+def native_initdb():
+    os.system("python /opt/toughradius/toughctl -f /etc/toughradius.json")
+
+def native_install(release):
+    _linux = platform.dist()[0]
+    if _linux  == 'centos':
+        centos_install(release)
+    elif _linux  == 'ubuntu':
+        ubuntu_install(release)
+    else:
+        click.echo(click.style("setup not support",fg='green'))
+
+
+
+
+
+
+
+    
 
 
 

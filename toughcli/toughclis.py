@@ -96,7 +96,7 @@ def redis(install,edit_config,docker_operate,rundir,instance):
 @click.option('-d','--rundir', default=RUNDIR, help="default:%s"%RUNDIR)
 @click.option('-i','--instance', default='myradius')
 @click.option('-n','--worker-num', default=2,type=click.INT)
-@click.option('-r','--release', default='stable',type=click.Choice(['dev','stable','commcial']),)
+@click.option('-r','--release', default='stable',type=click.Choice(['dev','stable','commcial']))
 def radius(install,edit_config, docker_operate,rundir,instance,worker_num,release):
     if install and release == 'commcial':
         licence = click.prompt('Please enter your commcial licence:', default='')
@@ -106,6 +106,24 @@ def radius(install,edit_config, docker_operate,rundir,instance,worker_num,releas
         radius_serv.docker_op(rundir,instance,docker_operate)
     elif edit_config:
         click.edit(filename="{0}/{1}/docker-compose.yml".format(rundir,instance))
+
+@click.command()
+@click.option('--install', is_flag=True)
+@click.option('--initdb', is_flag=True)
+@click.option('--upgrade', is_flag=True)
+@click.option('-e','--edit-config', is_flag=True,help="edit radius config")
+@click.option('-r','--release', default='stable',type=click.Choice(['dev','stable','commcial']))
+def native_radius(install,initdb,upgrade,edit_config,release):
+    if install and release == 'commcial':
+        licence = click.prompt('Please enter your commcial licence:', default='')
+    elif install and release in ('dev','stable'):
+        radius_serv.native_install(release)    
+    elif initdb:
+        radius_serv.native_initdb()
+    elif edit_config:
+        click.edit(filename="/etc/toughradius.json")
+
+
 
 @click.command()
 @click.option('--install', is_flag=True)
@@ -131,6 +149,7 @@ cli.add_command(docker)
 cli.add_command(mysql)
 cli.add_command(redis)
 cli.add_command(radius)
+cli.add_command(native_radius)
 cli.add_command(wlan)
 
 if __name__ == '__main__':
