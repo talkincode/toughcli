@@ -177,7 +177,7 @@ def ubuntu_install(release):
     click.echo(click.style(strs,fg='green'))
 
 def centos_install(release):
-    os.system("yum install -y  wget zip python-devel libffi-devel openssl openssl-devel gcc git")
+    os.system("yum install -y  wget zip python-devel libffi-devel openssl openssl-devel gcc git czmq czmq-devel")
     os.system("yum install -y  mysql-devel MySQL-python redis")
     install_native_py_models()
     install_native_release(release)
