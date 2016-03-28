@@ -148,6 +148,8 @@ def install_native_py_models():
     os.system("pip install psutil")
     os.system("pip install IPy")
     os.system("pip install evernote")
+    os.system("pip install https://github.com/talkincode/toughlib/archive/master.zip --upgrade --no-deps")
+    os.system("pip install https://github.com/talkincode/txradius/archive/master.zip --upgrade --no-deps")
 
 def install_native_release(release):
     if os.path.exists("/opt/toughradius"):
@@ -162,6 +164,9 @@ def install_native_release(release):
     os.system("ln -s /opt/toughradius/etc/supervisord /etc/init.d/supervisord")
     os.system("chmod +x /etc/init.d/supervisord")
     os.system("chkconfig supervisord on")
+    os.system("ln -s /opt/toughradius/etc/supervisord.service /usr/lib/systemd/system/supervisord.service")
+    os.system("chmod 754 /usr/lib/systemd/system/supervisord.service")
+
 
 def ubuntu_install(release):
     os.system("apt-get install -y  libffi-devel openssl openssl-devel git gcc python-devel python-setuptools")
