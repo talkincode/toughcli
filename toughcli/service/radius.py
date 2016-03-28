@@ -194,6 +194,8 @@ def native_upgrade(release):
     os.system("cd /opt/toughradius && git fetch origin release-%s && git reset --hard FETCH_HEAD && git clean -df"%release)
 
 def native_install(release):
+    if os.path.exists("/var/toughradius/data"):
+        os.makedirs("/var/toughradius/data")
     _linux = platform.dist()[0]
     if _linux  == 'centos':
         centos_install(release)
