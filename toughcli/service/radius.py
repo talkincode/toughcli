@@ -179,6 +179,9 @@ def centos_install(release):
 def native_initdb():
     os.system("python /opt/toughradius/toughctl -f /etc/toughradius.json")
 
+def native_upgrade(release):
+    os.system("cd /opt/toughradius && git fetch origin release-%s && git reset --hard FETCH_HEAD && git clean -df"%release)
+
 def native_install(release):
     _linux = platform.dist()[0]
     if _linux  == 'centos':

@@ -120,6 +120,8 @@ def native_radius(install,initdb,upgrade,edit_config,release):
         radius_serv.native_install(release)    
     elif initdb:
         radius_serv.native_initdb()
+    elif upgrade:
+        radius_serv.native_upgrade()
     elif edit_config:
         click.edit(filename="/etc/toughradius.json")
 
