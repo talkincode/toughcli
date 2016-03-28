@@ -162,7 +162,7 @@ def install_native_release(release):
 
 def ubuntu_install(release):
     os.system("apt-get install -y  libffi-devel openssl openssl-devel git gcc python-devel python-setuptools")
-    os.system("yum install -y  mysql-client libmysqlclient-dev libzmq-dev redis-server")
+    os.system("apt-get install -y  mysql-client libmysqlclient-dev libzmq-dev redis-server")
     install_native_py_models()
     install_native_release(release)
     strs = "install done, please edit /etc/toughradius.json and start by 'service supervisord start' "
@@ -170,7 +170,7 @@ def ubuntu_install(release):
 
 def centos_install(release):
     os.system("yum install -y  wget zip python-devel libffi-devel openssl openssl-devel gcc git")
-    os.system("apt-get install -y  mysql-devel MySQL-python redis-server")
+    os.system("yum install -y  mysql-devel MySQL-python redis")
     install_native_py_models()
     install_native_release(release)
     strs = "install done, please edit /etc/toughradius.json and start by 'service supervisord start' "
