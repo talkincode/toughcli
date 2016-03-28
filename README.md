@@ -1,6 +1,6 @@
 # toughcli
 
-toughcli 是一个基于toughradius以及相关软件的工具包。
+toughcli 是一个toughradius以及相关软件的工具包。
 
 ## 运行环境
 

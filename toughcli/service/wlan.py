@@ -27,7 +27,7 @@ wlanpd:
         - DB_URL=mysql://{mysql_user}:{mysql_pwd}@{mysql_host}:{mysql_port}/{mysql_db}?charset=utf8
     restart: always
     volumes:
-        - /home/toughrun/{instance}:/var/toughwlan
+        - {rundir}/{instance}:/var/toughwlan
 wlan:
     command: pypy /opt/toughwlan/toughctl  --httpd
     image: "index.alauda.cn/toughstruct/toughwlan"
@@ -50,7 +50,7 @@ wlan:
           soft: 20000
           hard: 40000    
     volumes:
-        - /home/toughrun/{instance}:/var/toughwlan
+        - {rundir}/{instance}:/var/toughwlan
 haproxy:
     image: "index.alauda.cn/tutum/haproxy"
     privileged: true

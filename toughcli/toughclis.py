@@ -113,7 +113,7 @@ def radius(install,edit_config, docker_operate,rundir,instance,worker_num,releas
 @click.option('-e','--edit-config', is_flag=True,help="edit toughwlan docker-compose.yml config")
 @click.option('-o','--docker-operate', default='', type=click.Choice(WLAN_OPS),help="docker instance operate")
 @click.option('-d','--rundir', default=RUNDIR, help="default:%s"%RUNDIR)
-@click.option('-i','--instance', default='myradius')
+@click.option('-i','--instance', default='toughwlan')
 @click.option('-n','--worker-num', default=2,type=click.INT)
 def wlan(install,scale,edit_config, docker_operate,rundir,instance,worker_num):
     if install:
