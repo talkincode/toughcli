@@ -186,7 +186,7 @@ def centos_install(release):
     click.echo(click.style(strs,fg='green'))
 
 def native_initdb():
-    os.system("python /opt/toughradius/toughctl -f -c /etc/toughradius.json")
+    os.system("python /opt/toughradius/toughctl --initdb -f -c /etc/toughradius.json")
 
 def native_upgrade(release):
     os.system("cd /opt/toughradius && git fetch origin release-%s && git reset --hard FETCH_HEAD && git clean -df"%release)
