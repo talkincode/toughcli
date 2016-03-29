@@ -2,6 +2,7 @@
 #coding:utf-8
 import os, sys, click
 import shutil
+import platform
 from toughcli.settings import *
 
 docker_compose_fmt = '''redis:
