@@ -180,6 +180,7 @@ cli.add_command(redis)
 cli.add_command(radius)
 cli.add_command(native_radius)
 cli.add_command(wlan)
+cli.add_command(native_wlan)
 
 if __name__ == '__main__':
     cli()
