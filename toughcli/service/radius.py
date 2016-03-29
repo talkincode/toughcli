@@ -157,16 +157,12 @@ def install_native_release(release):
     else:
         os.system("cd /opt && git clone -b release-%s https://github.com/talkincode/ToughRADIUS.git /opt/toughradius"%release)
     os.system("rm -f /etc/toughradius.json")
-    os.system("rm -f /etc/supervisord.conf")
-    os.system("rm -f /etc/init.d/supervisord")
-    os.system("rm -f /usr/lib/systemd/system/supervisord.service")
+    os.system("rm -f /etc/toughradius.conf")
+    os.system("rm -f /usr/lib/systemd/system/toughradius.service")
     os.system("ln -s /opt/toughradius/etc/toughradius.json /etc/toughradius.json")
-    os.system("ln -s /opt/toughradius/etc/supervisord_native.conf /etc/supervisord.conf")
-    os.system("ln -s /opt/toughradius/etc/supervisord /etc/init.d/supervisord")
-    os.system("chmod +x /etc/init.d/supervisord")
-    os.system("chkconfig supervisord on")
-    os.system("ln -s /opt/toughradius/etc/supervisord.service /usr/lib/systemd/system/supervisord.service")
-    os.system("chmod 754 /usr/lib/systemd/system/supervisord.service")
+    os.system("ln -s /opt/toughradius/etc/toughradius_native.conf /etc/toughradius.conf")
+    os.system("ln -s /opt/toughradius/etc/toughradius.service /usr/lib/systemd/system/toughradius.service")
+    os.system("chmod 754 /usr/lib/systemd/system/toughradius.service")
 
 
 def ubuntu_install(release):
@@ -174,17 +170,18 @@ def ubuntu_install(release):
     os.system("apt-get install -y  mysql-client libmysqlclient-dev libzmq-dev redis-server")
     install_native_py_models()
     install_native_release(release)
-    strs = "install done, please edit /etc/toughradius.json and start by 'service supervisord start' "
+    strs = "install done, please edit /etc/toughradius.json and start by 'service toughradius start' "
     click.echo(click.style(strs,fg='green'))
 
 def centos_install(release):
     os.system("yum install -y  wget zip python-devel libffi-devel openssl openssl-devel gcc git czmq czmq-devel")
     os.system("yum install -y  mysql-devel MySQL-python redis")
     install_native_py_models()
-    os.system("ln -s /usr/bin/supervisord /usr/local/bin/supervisord")
-    os.system("ln -s /usr/bin/supervisorctl /usr/local/bin/supervisorctl")
+    if os.path.exists("/usr/local/bin/supervisord"):
+        os.system("ln -s /usr/bin/supervisord /usr/local/bin/supervisord")
+        os.system("ln -s /usr/bin/supervisorctl /usr/local/bin/supervisorctl")
     install_native_release(release)
-    strs = "install done, please edit /etc/toughradius.json and start by 'service supervisord start' "
+    strs = "install done, please edit /etc/toughradius.json and start by 'service toughradius start' "
     click.echo(click.style(strs,fg='green'))
 
 def native_initdb():
