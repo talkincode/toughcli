@@ -157,11 +157,9 @@ def install_native_release(release):
         os.system("cd /opt && git clone -b release-%s https://github.com/talkincode/ToughRADIUS.git /opt/toughradius"%release)
     os.system("rm -f /etc/toughradius.json")
     os.system("rm -f /etc/toughradius.conf")
-    os.system("rm -f /etc/toughradius-redis.conf")
     os.system("rm -f /usr/lib/systemd/system/toughradius.service")
     os.system("ln -s /opt/toughradius/etc/toughradius.json /etc/toughradius.json")
     os.system("ln -s /opt/toughradius/etc/toughradius_native.conf /etc/toughradius.conf")
-    os.system("ln -s /opt/toughradius/etc/redis.conf /etc/toughradius-redis.conf")
     os.system("ln -s /opt/toughradius/etc/toughradius.service /usr/lib/systemd/system/toughradius.service")
     os.system("chmod 754 /usr/lib/systemd/system/toughradius.service")
 
