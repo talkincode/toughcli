@@ -153,6 +153,26 @@ def wlan(install,scale,edit_config, docker_operate,rundir,instance,worker_num):
         wlan_serv.docker_scale(rundir,instance,worker_num)
 
 
+@click.command()
+@click.option('--install', is_flag=True)
+@click.option('--initdb', is_flag=True)
+@click.option('--upgrade', is_flag=True)
+@click.option('-e','--edit-config', is_flag=True,help="edit wlan config")
+@click.option('-r','--release', default='stable',type=click.Choice(['dev','stable','commcial']))
+def native_wlan(install,initdb,upgrade,edit_config,release):
+    """ install toughwlan by native mode"""
+    if install and release == 'commcial':
+        licence = click.prompt('Please enter your commcial licence:', default='')
+    elif install and release in ('dev','stable'):
+        wlan_serv.native_install(release)    
+    elif initdb:
+        wlan_serv.native_initdb()
+    elif upgrade:
+        wlan_serv.native_upgrade(release)
+    elif edit_config:
+        click.edit(filename="/etc/toughwlan.json")
+
+
 cli.add_command(upgrade)
 cli.add_command(docker)
 cli.add_command(mysql)

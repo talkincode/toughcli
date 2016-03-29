@@ -147,7 +147,6 @@ def install_native_py_models():
     os.system("pip install msgpack-python")
     os.system("pip install psutil")
     os.system("pip install IPy")
-    os.system("pip install evernote")
     os.system("pip install -U https://github.com/talkincode/toughlib/archive/master.zip --no-deps")
     os.system("pip install -U https://github.com/talkincode/txradius/archive/master.zip --no-deps")
 
