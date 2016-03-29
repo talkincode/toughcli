@@ -194,9 +194,11 @@ def install_native_release(release):
         os.system("cd /opt && git clone -b release-%s https://github.com/talkincode/toughwlan.git /opt/toughwlan"%release)
     os.system("rm -f /etc/toughwlan.json")
     os.system("rm -f /etc/toughwlan.conf")
+    os.system("rm -f /etc/toughwlan-redis.conf")
     os.system("rm -f /usr/lib/systemd/system/toughwlan.service")
     os.system("ln -s /opt/toughwlan/etc/toughwlan.json /etc/toughwlan.json")
-    os.system("ln -s /opt/toughwlan/etc/toughwlan_native.conf /etc/toughwlan.conf")
+    os.system("ln -s /opt/toughwlan/etc/toughwlan.conf /etc/toughwlan.conf")
+    os.system("ln -s /opt/toughwlan/etc/redis.conf /etc/toughwlan-redis.conf")
     os.system("ln -s /opt/toughwlan/etc/toughwlan.service /usr/lib/systemd/system/toughwlan.service")
     os.system("chmod 754 /usr/lib/systemd/system/toughwlan.service")
 
@@ -213,6 +215,7 @@ def ubuntu_install(release):
     click.echo(click.style(strs,fg='green'))
 
 def centos_install(release):
+    os.system("yum install -y epel-release" )
     os.system("yum install -y  wget zip python-devel libffi-devel openssl openssl-devel gcc git czmq czmq-devel")
     os.system("yum install -y  mysql-devel MySQL-python redis")
     install_native_py_models()
