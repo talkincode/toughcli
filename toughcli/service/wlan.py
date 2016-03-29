@@ -34,7 +34,7 @@ wlan:
     image: "index.alauda.cn/toughstruct/toughwlan"
     privileged: true
     expose:
-        - "1810"
+        - "1818"
     links:
         - redis:redis
     environment:
@@ -84,7 +84,7 @@ wlan:
     image: "index.alauda.cn/toughstruct/toughwlan"
     privileged: true
     ports:
-        - "{web_port}:1810"
+        - "{web_port}:1818"
         - "{portal_listen_port}:50100"
     links:
         - redis:redis
