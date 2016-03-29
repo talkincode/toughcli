@@ -37,14 +37,15 @@ def print_info(ctx, param, value):
 
 @click.group()
 @click.option('--version', is_flag=True, callback=print_version,expose_value=False, is_eager=True)
-@click.option('--info', is_flag=True, callback=print_info,expose_value=False, is_eager=True)
+@click.option('--info', is_flag=True, callback=print_info,expose_value=False, is_eager=True, help="server info")
 def cli():
     pass
 
 @click.command()
-@click.option('--pypi', is_flag=True,help="from pypi")
-@click.option('--github', is_flag=True,help="from github")
+@click.option('--pypi', is_flag=True,help="upgrade from pypi")
+@click.option('--github', is_flag=True,help="upgrade from github")
 def upgrade(pypi,github):
+    """ upgrade toughcli tools version"""
     if github:
         os.system("sudo pip install --upgrade https://github.com/talkincode/toughcli/archive/master.zip")
     elif pypi:
@@ -54,6 +55,7 @@ def upgrade(pypi,github):
 @click.command()
 @click.option('--install', is_flag=True,help="install docker & docker-compose")
 def docker(install):
+    """ install docker and docker-compose"""
     if install:
         docker_serv.auto_install()
 
@@ -65,6 +67,7 @@ def docker(install):
 @click.option('-d','--rundir', default=RUNDIR,help="default:%s"%RUNDIR)
 @click.option('-i','--instance', default='mydb',help="mysql instance, default:mydb")
 def mysql(install,edit_config,docker_operate,rundir,instance):
+    """ install mysql by docker mode"""
     if install:
         mysql_serv.docker_install(rundir,instance)
     elif docker_operate:
@@ -80,6 +83,7 @@ def mysql(install,edit_config,docker_operate,rundir,instance):
 @click.option('-d','--rundir', default=RUNDIR, help="default:%s"%RUNDIR)
 @click.option('-i','--instance', default='myredis',help="redis instance, default:myredis")
 def redis(install,edit_config,docker_operate,rundir,instance):
+    """ install redis by docker mode"""
     if install:
         redis_serv.docker_install(rundir,instance)
     elif docker_operate:
@@ -98,6 +102,7 @@ def redis(install,edit_config,docker_operate,rundir,instance):
 @click.option('-n','--worker-num', default=2,type=click.INT)
 @click.option('-r','--release', default='stable',type=click.Choice(['dev','stable','commcial']))
 def radius(install,edit_config, docker_operate,rundir,instance,worker_num,release):
+    """ install toughradius by docker mode"""
     if install and release == 'commcial':
         licence = click.prompt('Please enter your commcial licence:', default='')
     elif install and release in ('dev','stable'):
@@ -114,6 +119,7 @@ def radius(install,edit_config, docker_operate,rundir,instance,worker_num,releas
 @click.option('-e','--edit-config', is_flag=True,help="edit radius config")
 @click.option('-r','--release', default='stable',type=click.Choice(['dev','stable','commcial']))
 def native_radius(install,initdb,upgrade,edit_config,release):
+    """ install toughradius by native mode"""
     if install and release == 'commcial':
         licence = click.prompt('Please enter your commcial licence:', default='')
     elif install and release in ('dev','stable'):
@@ -136,6 +142,7 @@ def native_radius(install,initdb,upgrade,edit_config,release):
 @click.option('-i','--instance', default='toughwlan')
 @click.option('-n','--worker-num', default=2,type=click.INT)
 def wlan(install,scale,edit_config, docker_operate,rundir,instance,worker_num):
+    """ install toughwlan by docker mode"""
     if install:
         wlan_serv.docker_install(rundir,instance,worker_num)
     elif docker_operate:
