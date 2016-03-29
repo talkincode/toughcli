@@ -177,7 +177,7 @@ def centos_install(release):
     os.system("yum install -y  wget zip python-devel libffi-devel openssl openssl-devel gcc git czmq czmq-devel")
     os.system("yum install -y  mysql-devel MySQL-python redis")
     install_native_py_models()
-    if os.path.exists("/usr/local/bin/supervisord"):
+    if not os.path.exists("/usr/local/bin/supervisord"):
         os.system("ln -s /usr/bin/supervisord /usr/local/bin/supervisord")
         os.system("ln -s /usr/bin/supervisorctl /usr/local/bin/supervisorctl")
     install_native_release(release)
