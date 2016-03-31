@@ -123,7 +123,7 @@ def native_upgrade(release):
 
 def native_install(release,gitrepo):
     _gitrepo = "https://github.com/talkincode/ToughRADIUS.git"
-    if gitrepo and gitrepo not in 'official'
+    if gitrepo and gitrepo not in 'official':
         _gitrepo = gitrepo
     if os.path.exists("/opt/toughradius"):
         native_upgrade(release)
