@@ -145,6 +145,9 @@ def docker_op(rundir,instance,op):
         os.system('cd {0} && docker-compose {1}'.format(target_dir,op))
         if op == 'rm' and click.confirm('Do you want to remove toughwlan data ({0})?'.format(target_dir)):
             shutil.rmtree(target_dir)
+    elif op =='upgrade':
+        os.system('cd {0} && docker-compose pull && docker-compose kill && \
+            docker-compose rm && docker-compose up -d && docker-compose ps'.format(target_dir))
     else:
         click.echo(click.style("unsupported operation {0}".format(op),fg='red'))
 

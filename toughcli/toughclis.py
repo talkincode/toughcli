@@ -118,12 +118,13 @@ def radius(install,edit_config, docker_operate,rundir,instance,worker_num,releas
 @click.option('--upgrade', is_flag=True)
 @click.option('-e','--edit-config', is_flag=True,help="edit radius config")
 @click.option('-r','--release', default='stable',type=click.Choice(['dev','stable','commcial']))
-def native_radius(install,initdb,upgrade,edit_config,release):
+@click.option('--gitrepo', default='official')
+def native_radius(install,initdb,upgrade,edit_config,release,gitrepo):
     """ install toughradius by native mode"""
     if install and release == 'commcial':
         licence = click.prompt('Please enter your commcial licence:', default='')
     elif install and release in ('dev','stable'):
-        radius_serv.native_install(release)    
+        radius_serv.native_install(release,gitrepo)    
     elif initdb:
         radius_serv.native_initdb()
     elif upgrade:
