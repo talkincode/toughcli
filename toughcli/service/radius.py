@@ -135,7 +135,7 @@ def native_install(release,gitrepo):
         os.system("cd /opt/toughradius && make all")
     # elif _linux  == 'ubuntu':
     #     ubuntu_install(release)
-    click.echo(click.style(done_str,fg='green'))
+        click.echo(click.style(done_str,fg='green'))
     else:
         click.echo(click.style("setup not support",fg='green'))
         
