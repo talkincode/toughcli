@@ -39,7 +39,7 @@ def docker_install(rundir,instance):
         password = click.prompt('Please enter mysql password', default='mypwd'),
         root_password = click.prompt('Please enter mysql root password ', default=''),
         dbname = click.prompt('Please enter mysql database', default='mydb'),
-        max_mem = click.prompt('Please enter mysql max_mem', default='', 
+        max_mem = click.prompt('Please enter mysql max_mem (512M,1G,4G) ', default='', 
             type=click.Choice(['', '512M','1G','4G'])),
         mysql_repl_password = '',
         serverid = '',
