@@ -14,7 +14,7 @@ docker_compose_fmt = '''redis:
         - REDIS_PASS=wlanredis
     restart: always 
 wlanpd:
-    command: pypy /opt/toughwlan/toughctl  --portald
+    command: pypy /opt/toughwlan/wlanctl portald
     image: "index.alauda.cn/toughstruct/toughwlan"
     ports:
         - "{portal_listen_port}:50100/udp"
@@ -30,7 +30,7 @@ wlanpd:
     volumes:
         - {rundir}/{instance}:/var/toughwlan
 wlan:
-    command: pypy /opt/toughwlan/toughctl  --httpd
+    command: pypy /opt/toughwlan/wlanctl httpd
     image: "index.alauda.cn/toughstruct/toughwlan"
     privileged: true
     expose:
@@ -80,7 +80,7 @@ docker_compose_fmt2 = '''redis:
     restart: always         
 wlan:
     container_name: wlan_{instance}
-    command: pypy /opt/toughwlan/toughctl --standalone
+    command: pypy /opt/toughwlan/wlanctl standalone
     image: "index.alauda.cn/toughstruct/toughwlan"
     privileged: true
     ports:
@@ -167,20 +167,20 @@ def docker_scale(rundir,instance,num):
 
 done_str ="""
 
-    ----------------------------------------------------------------------------------------------
-    - Toughradius has been installed on  /opt/toughwlan, please edit /etc/toughwlan.json
-    - You may need to modify the database cofiguration options
-    - Please execute cd /opt/toughwlan && make initdb' to initialize the database, 
-      and do not forget to back up data
-    - If you want to start radius server, please excute 'service toughwlan start'
-    - If you want to stop radius server, please excute 'service toughwlan stop'
-    - If you want to check its status, please excute 'service toughwlan status'
-    - All data and all log  are on /var/toughwlan:
-    - Sqlite data: /var/toughwlan/toughwlan.sqlite3
-    - Toughwlan backup dir: /var/toughwlan/data 
-    - Toughwlan console log: /var/toughwlan/wlan-httpd.log
-    - For example,  the last 100-line log : tail -n 100 /var/toughwlan/wlan-httpd.log
-    ----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+- Toughradius has been installed on  /opt/toughwlan, please edit /etc/toughwlan.json
+- You may need to modify the database cofiguration options
+- Please execute cd /opt/toughwlan && make initdb' to initialize the database, 
+  and do not forget to back up data
+- If you want to start radius server, please excute 'service toughwlan start'
+- If you want to stop radius server, please excute 'service toughwlan stop'
+- If you want to check its status, please excute 'service toughwlan status'
+- All data and all log  are on /var/toughwlan:
+- Sqlite data: /var/toughwlan/toughwlan.sqlite3
+- Toughwlan backup dir: /var/toughwlan/data 
+- Toughwlan console log: /var/toughwlan/wlan-httpd.log
+- For example,  the last 100-line log : tail -n 100 /var/toughwlan/wlan-httpd.log
+----------------------------------------------------------------------------------------------
 
 """
 

@@ -97,21 +97,21 @@ def docker_op(rundir,instance,op):
 
 done_str ="""
 
-    ----------------------------------------------------------------------------------------------
-    - Toughradius has been installed on  /opt/toughradius, please edit /etc/toughradius.json
-    - You may need to modify the database cofiguration options
-    - Please execute cd /opt/toughradius && make initdb' to initialize the database, 
-      and do not forget to back up data
-    - If you want to start radius server, please excute 'service toughradius start'
-    - If you want to stop radius server, please excute 'service toughradius stop'
-    - If you want to check its status, please excute 'service toughradius status'
-    - All data and all log  are on /var/toughradius:
-    - Sqlite data: /var/toughradius/toughradius.sqlite3
-    - Toughradius backup dir: /var/toughradius/data 
-    - Toughradius admin console log: /var/toughradius/radius-manage.log 
-    - Toughradius radius console log: /var/toughradius/radius-worker.log
-    - For example,  the last 100-line log : tail -n 100 /var/toughradius/radius-worker.log
-    ----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+- Toughradius has been installed on  /opt/toughradius, please edit /etc/toughradius.json
+- You may need to modify the database cofiguration options
+- Please execute cd /opt/toughradius && make initdb' to initialize the database, 
+  and do not forget to back up data
+- If you want to start radius server, please excute 'service toughradius start'
+- If you want to stop radius server, please excute 'service toughradius stop'
+- If you want to check its status, please excute 'service toughradius status'
+- All data and all log  are on /var/toughradius:
+- Sqlite data: /var/toughradius/toughradius.sqlite3
+- Toughradius backup dir: /var/toughradius/data 
+- Toughradius admin console log: /var/toughradius/radius-manage.log 
+- Toughradius radius console log: /var/toughradius/radius-worker.log
+- For example,  the last 100-line log : tail -n 100 /var/toughradius/radius-worker.log
+----------------------------------------------------------------------------------------------
 
 """
 

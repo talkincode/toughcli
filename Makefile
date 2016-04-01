@@ -13,7 +13,11 @@ clean:
 	@find . -type d -name "__pycache__" -delete
 
 venv:
-	virtualenv venv --no-site-packages
+	(\
+	test -d venv || virtualenv venv;\
+	venv/bin/pip install Click;\
+	venv/bin/pip install -e .;\
+	)
 
 install:
 	python setup.py install
