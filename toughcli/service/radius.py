@@ -119,7 +119,7 @@ def native_initdb():
     os.system("python /opt/toughradius/radiusctl initdb -f -c /etc/toughradius.json")
 
 def native_upgrade(release):
-    os.system("cd /opt/toughradius && git fetch origin release-%s && git reset --hard FETCH_HEAD && git clean -df"%release)
+    os.system("cd /opt/toughradius && git pull --rebase --stat origin release-%s"%release)
 
 def native_install(release,gitrepo):
     _gitrepo = "https://github.com/talkincode/ToughRADIUS.git"

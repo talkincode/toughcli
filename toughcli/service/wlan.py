@@ -163,84 +163,48 @@ def docker_scale(rundir,instance,num):
 
 ##################################################################################
 
-def install_native_py_models():
-    os.system("pip install supervisor")
-    os.system("pip install wheel")
-    os.system("pip install Mako")
-    os.system("pip install Beaker")
-    os.system("pip install MarkupSafe")
-    os.system("pip install PyYAML")
-    os.system("pip install Twisted")
-    os.system("pip install treq")
-    os.system("pip install tablib")
-    os.system("pip install cyclone")
-    os.system("pip install six")
-    os.system("pip install autobahn")
-    os.system("pip install pycrypto")
-    os.system("pip install pyOpenSSL>=0.14")
-    os.system("pip install service_identity")
-    os.system("pip install MySQL-python")
-    os.system("pip install SQLAlchemy")
-    os.system("pip install pyzmq")
-    os.system("pip install txzmq")
-    os.system("pip install redis")
-    os.system("pip install msgpack-python")
-    os.system("pip install psutil")
-    os.system("pip install IPy")
-    os.system("pip install -U https://github.com/talkincode/toughlib/archive/master.zip --no-deps")
-    os.system("pip install -U https://github.com/talkincode/txportal/archive/master.zip --no-deps")
+##################################################################################
 
-def install_native_release(release):
+done_str ="""
+
+    ----------------------------------------------------------------------------------------------
+    - Toughradius has been installed on  /opt/toughwlan, please edit /etc/toughwlan.json
+    - You may need to modify the database cofiguration options
+    - Please execute cd /opt/toughwlan && make initdb' to initialize the database, 
+      and do not forget to back up data
+    - If you want to start radius server, please excute 'service toughwlan start'
+    - If you want to stop radius server, please excute 'service toughwlan stop'
+    - If you want to check its status, please excute 'service toughwlan status'
+    - All data and all log  are on /var/toughwlan:
+    - Sqlite data: /var/toughwlan/toughwlan.sqlite3
+    - Toughwlan backup dir: /var/toughwlan/data 
+    - Toughwlan console log: /var/toughwlan/wlan-httpd.log
+    - For example,  the last 100-line log : tail -n 100 /var/toughwlan/wlan-httpd.log
+    ----------------------------------------------------------------------------------------------
+
+"""
+
+def native_initdb():
+    os.system("python /opt/toughwlan/wlanctl initdb -f -c /etc/toughwlan.json")
+
+def native_upgrade(release):
+    os.system("cd /opt/toughwlan && git pull --rebase --stat origin release-%s"%release)
+
+def native_install(release,gitrepo):
+    _gitrepo = "https://github.com/talkincode/toughwlan.git"
+    if gitrepo and gitrepo not in 'official':
+        _gitrepo = gitrepo
     if os.path.exists("/opt/toughwlan"):
         native_upgrade(release)
     else:
-        os.system("cd /opt && git clone -b release-%s https://github.com/talkincode/toughwlan.git /opt/toughwlan"%release)
-    os.system("rm -f /etc/toughwlan.json")
-    os.system("rm -f /etc/toughwlan.conf")
-    os.system("rm -f /usr/lib/systemd/system/toughwlan.service")
-    os.system("ln -s /opt/toughwlan/etc/toughwlan.json /etc/toughwlan.json")
-    os.system("ln -s /opt/toughwlan/etc/toughwlan.conf /etc/toughwlan.conf")
-    os.system("ln -s /opt/toughwlan/etc/toughwlan.service /usr/lib/systemd/system/toughwlan.service")
-    os.system("chmod 754 /usr/lib/systemd/system/toughwlan.service")
+        os.system("cd /opt && git clone -b release-%s %s /opt/toughwlan"%(release,_gitrepo))
 
-
-def ubuntu_install(release):
-    os.system("apt-get install -y  libffi-devel openssl openssl-devel git gcc python-devel python-setuptools")
-    os.system("apt-get install -y  mysql-client libmysqlclient-dev libzmq-dev redis-server")
-    install_native_py_models()
-    if not os.path.exists("/usr/local/bin/supervisord"):
-        os.system("ln -s /usr/bin/supervisord /usr/local/bin/supervisord")
-        os.system("ln -s /usr/bin/supervisorctl /usr/local/bin/supervisorctl")
-    install_native_release(release)
-    strs = "install done, please edit /etc/toughwlan.json and start by 'service toughwlan start' "
-    click.echo(click.style(strs,fg='green'))
-
-def centos_install(release):
-    os.system("yum install -y epel-release" )
-    os.system("yum install -y  wget zip python-devel libffi-devel openssl openssl-devel gcc git czmq czmq-devel")
-    os.system("yum install -y  mysql-devel MySQL-python redis")
-    install_native_py_models()
-    if not os.path.exists("/usr/local/bin/supervisord"):
-        os.system("ln -s /usr/bin/supervisord /usr/local/bin/supervisord")
-        os.system("ln -s /usr/bin/supervisorctl /usr/local/bin/supervisorctl")
-    install_native_release(release)
-    strs = "install done, please edit /etc/toughwlan.json and start by 'service toughwlan start' "
-    click.echo(click.style(strs,fg='green'))
-
-def native_initdb():
-    os.system("python /opt/toughwlan/toughctl --initdb -f -c /etc/toughwlan.json")
-
-def native_upgrade(release):
-    os.system("cd /opt/toughwlan && git fetch origin release-%s && git reset --hard FETCH_HEAD && git clean -df"%release)
-
-def native_install(release):
-    if not os.path.exists("/var/toughwlan/data"):
-        os.makedirs("/var/toughwlan/data")
     _linux = platform.dist()[0]
     if _linux  == 'centos':
-        centos_install(release)
-    elif _linux  == 'ubuntu':
-        ubuntu_install(release)
+        os.system("cd /opt/toughwlan && make all")
+    # elif _linux  == 'ubuntu':
+    #     ubuntu_install(release)
+        click.echo(click.style(done_str,fg='green'))
     else:
         click.echo(click.style("setup not support",fg='green'))
 
