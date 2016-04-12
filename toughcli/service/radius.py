@@ -9,15 +9,7 @@ docker_compose_fmt = '''radius:
     container_name: radius_{instance}
     image: "index.alauda.cn/toughstruct/toughradius:{release}"
     net: "host"
-    ulimits:
-        nproc: 65535
-        nofile:
-          soft: 20000
-          hard: 40000
     environment:
-        - REDIS_URL=redis
-        - REDIS_PORT=6379
-        - REDIS_PWD=tredis
         - DB_TYPE=mysql
         - DB_URL=mysql://{mysql_user}:{mysql_pwd}@{mysql_host}:{mysql_port}/{mysql_db}?charset=utf8
     restart: always
@@ -35,14 +27,18 @@ docker_compose_fmt2 = '''radius:
         - {rundir}/{instance}:/var/toughradius
 '''.format
 
+def get_docker_compose_fmt(dbtype='sqlite'):
+    if dbtype =='mysql':
+        return docker_compose_fmt
+    else:
+        return docker_compose_fmt2
+
 
 def docker_install(rundir,instance,work_num,release):
-    yaml_cfg = docker_compose_fmt
     params_cfg = {}
     dbtype = click.prompt('database type [sqlite,mysql]', default='sqlite', type=click.Choice(['sqlite','mysql']))
-    if dbtype == 'sqlite':
-        yaml_cfg = docker_compose_fmt2
-    else:
+    yaml_cfg = get_docker_compose_fmt(dbtype)
+    if dbtype == 'mysql':
         params_cfg.update(
             mysql_port = click.prompt('Please enter mysql port', default='3306'),
             mysql_host = click.prompt('Please enter mysql host', default='localhost'),
@@ -73,6 +69,7 @@ def docker_install(rundir,instance,work_num,release):
         dcfile.write(yml_content)
         click.echo(click.style(yml_content,fg='green'))
 
+    os.system('cd {0} && docker-compose pull'.format(target_dir))
     os.system('cd {0} && docker-compose up -d'.format(target_dir))
     os.system('cd {0} && docker-compose ps'.format(target_dir))
 
@@ -133,11 +130,15 @@ def native_install(release,gitrepo):
     _linux = platform.dist()[0]
     if _linux  == 'centos':
         os.system("cd /opt/toughradius && make all")
+        if click.confirm('Do you want to init database?'):
+            os.system("cd /opt/toughradius && make initdb")
     # elif _linux  == 'ubuntu':
     #     ubuntu_install(release)
         click.echo(click.style(done_str,fg='green'))
     else:
         click.echo(click.style("setup not support",fg='green'))
+
+
         
 
 
