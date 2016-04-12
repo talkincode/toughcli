@@ -5,7 +5,7 @@ from fabric.api import *
 from toughcli import __version__
 
 env.user = 'root'
-env.hosts = ['121.201.63.77']
+env.hosts = ['121.201.15.99']
 
 def pub():
     try:
