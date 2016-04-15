@@ -71,6 +71,7 @@ def docker_install(rundir,instance):
         dcfile.write(yml_content)
         click.echo(click.style(yml_content,fg='green'))
 
+    os.system('cd {0} && docker-compose pull'.format(target_dir))
     os.system('cd {0} && docker-compose up -d'.format(target_dir))
     os.system('cd {0} && docker-compose ps'.format(target_dir))
 
@@ -90,6 +91,8 @@ def docker_op(rundir,instance,op):
         os.system('docker exec -it mysql_{0} sh -c "dbutils makedb" '.format(instance))
     elif op == 'showdbs':
         os.system('docker exec -it mysql_{0} sh -c "dbutils showdbs" '.format(instance))
+    elif op == 'makedb':
+        os.system('docker exec -it mysql_{0} sh -c "dbutils makedb" '.format(instance))
     else:
         click.echo(click.style("unsupported operation {0}".format(op),fg='red'))
 

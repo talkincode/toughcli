@@ -131,6 +131,7 @@ def docker_install(rundir,instance,work_num):
         dcfile.write(yml_content)
         click.echo(click.style(yml_content,fg='green'))
 
+    os.system('cd {0} && docker-compose pull'.format(target_dir))
     os.system('cd {0} && docker-compose up -d'.format(target_dir))
     os.system('cd {0} && docker-compose ps'.format(target_dir))
     if dbtype == 'mysql':
